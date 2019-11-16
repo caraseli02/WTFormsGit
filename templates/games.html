@@ -1,1 +1,11 @@
 {% extends "layout.html" %}
+{% block content %}
+    <section class="intro">
+    <h1 class="user__namne">Bienvenido {{ data_name }}</h1>
+    <span class="user__score"> Tu puntuacion es {{ data_puntos }}</span>
+    </section>
+    <section class="game">
+        <div class="game_worlds">{{ world_content}}</div>
+        <div class="game_pic"></div>
+    </section>
+{% endblock %}

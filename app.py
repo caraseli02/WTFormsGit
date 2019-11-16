@@ -1,11 +1,13 @@
 from flask import Flask, render_template, url_for, flash, redirect, session, request
 from forms import RegistrationForm, LoginForm
 from mySql import Base_datos
+
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'SuperSecretApp<'
 
 # conectar Base de Datos
 bd = Base_datos('localhost', 'root', '12345', 'myFlaskApp')
+
 
 @app.route("/")
 @app.route("/home")
@@ -17,11 +19,6 @@ def home():
     if 'email' in session:
         return redirect(url_for('games'))
     return render_template('home.html')
-
-
-@app.route("/games")
-def games():
-    return render_template('games.html', title='games')
 
 
 @app.route("/register", methods=['GET', 'POST'])
@@ -79,6 +76,17 @@ def login():
         else:
             flash('Login Unsuccessful. Please check username and password', 'danger')
     return render_template('login.html', title='Login', form=form)
+
+
+@app.route("/games")
+def games():
+    display_data = bd.query(f'SELECT u.username,p.puntos FROM gameuser AS u INNER JOIN puntos AS p ON u.ID_gameUser = p.ID_gameUser')
+    random_world = bd.query(f'SELECT Tema , palabra FROM palabras ORDER BY RAND() LIMIT 1;')
+    data_name = display_data[0][0]
+    data_puntos = display_data[0][1]
+    world_teme = random_world[0][0]
+    world_content = random_world[0][1]
+    return render_template('games.html', title='games', data_name=data_name, data_puntos=data_puntos,  world_content= world_content )
 
 
 if __name__ == '__main__':
